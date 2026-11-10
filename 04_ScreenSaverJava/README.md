@@ -1,198 +1,47 @@
 ![senai_logo](./src/image/logo.png)
 
-# ScreenSaver – Projeto Base para Programação Orientada a Objetos
+# ScreenSaver em Java (Mini Projeto 4)
 
-## Objetivo
+Este projeto implementa um "Protetor de Tela" animado utilizando a biblioteca Java Swing. O objetivo principal foi aplicar na prática os quatro pilares da **Programação Orientada a Objetos (POO)**: Abstração, Encapsulamento, Herança e Polimorfismo, modelando formas geométricas animadas.
 
-Este projeto tem como objetivo servir de base para o estudo dos pilares da Programação Orientada a Objetos (POO): **encapsulamento, abstração, herança e polimorfismo**.
+## 🛠️ Tecnologias Utilizadas
+- Java (JDK)
+- Java Swing e Graphics2D (Renderização e Interface Gráfica)
 
-A aplicação consiste em um protetor de tela simples utilizando Java Swing. A classe `ScreenSaver` fornece toda a infraestrutura da aplicação (janela, painel, timer, renderização e captura do teclado). O desenvolvimento do projeto concentra-se na implementação das classes do pacote `model` e na integração dessas classes com os pontos demarcados em `ScreenSaver.java`.
+## ⚙️ Como executar o projeto
 
-## Estrutura do Projeto
+1. Faça o clone deste repositório: `git clone https://github.com/LuisFelipeCorreia/MiniProjetosJAVA.git`
+2. Abra a pasta `04_ScreenSaverJava` na sua IDE (VS Code, Eclipse, IntelliJ, etc.).
+3. Execute o ficheiro `App.java` (onde se encontra o método `main`).
+4. A janela da animação abrirá. Utilize as **setas do teclado** (Cima, Baixo, Esquerda, Direita) para controlar o Retângulo azul, enquanto o Círculo verde se move automaticamente rebatendo nas bordas.
+
+## 🏛️ Os Quatro Pilares da POO no Código
+
+- **Abstração:** A classe `Forma` atua como um molde conceitual. Ela possui o método abstrato `desenhar(Graphics2D)`, que obriga cada formato geométrico específico a definir a sua própria aparência.
+- **Encapsulamento:** Os atributos (como posição X/Y, cor, raio e largura) estão protegidos nas classes (usando modificadores `protected` e `private`). Eles não são modificados diretamente pelo arquivo principal, mas sim de forma segura através dos métodos de movimento e construtores.
+- **Herança:** As classes `Circulo` e `Retangulo` herdam (`extends`) os atributos base de posição e cor da classe mãe `Forma`, promovendo o reaproveitamento de código.
+- **Polimorfismo:** Ambas as subclasses sobrescrevem (`@Override`) o método genérico `desenhar`. Ao chamar `desenhar(g2d)` no laço de repetição do `ScreenSaver`, o Java sabe automaticamente se deve renderizar uma elipse ou um retângulo com base no objeto que está a ser processado.
+
+## 📊 Diagrama de Classes
 
 ```mermaid
-treeView-beta
-src
-├── App.java
-├── model
-│   ├── Forma.java
-│   ├── Retangulo.java
-│   ├── Circulo.java
-│   └── ...
-└── view
-    └── ScreenSaver.java
-```
-
-## Localizando os pontos de implementação
-
-### 1. Declaração das formas
-
-```java
-/*********************************
-** ↓ Declare suas formas aqui ↓ **
-*********************************/
-```
-
-Declare todos os atributos das formas.
-
-```java
-private Retangulo jogador;
-private Circulo bola;
-```
-
-### 2. Instanciação das formas
-
-```java
-/***********************************
-** ↓ Instancie suas formas aqui ↓ **
-***********************************/
-```
-
-Crie os objetos.
-
-```java
-jogador = new Retangulo(...);
-bola = new Circulo(...);
-```
-
-### 3. Movimentação das formas
-
-```java
-/******************************
-** ↓ Mova suas formas aqui ↓ **
-******************************/
-```
-
-Este trecho é executado a cada atualização da animação.
-
-Movimento automático:
-
-```java
-bola.mover();
-```
-
-Movimento por teclado:
-
-```java
-if(right){
-    jogador.setX(jogador.getX()+5);
-}
-```
-
-Também é o local indicado para colisões e regras da aplicação.
-
-### 4. Desenho das formas
-
-```java
-/*********************************
-** ↓ Desenhe suas formas aqui ↓ **
-*********************************/
-```
-
-```java
-jogador.desenhar(g2d);
-bola.desenhar(g2d);
-```
-
-## Fluxo da aplicação
-
-```text
-Declarar objetos
-        ↓
-Instanciar objetos
-        ↓
-Movimentar objetos
-        ↓
-Desenhar objetos
-        ↓
-Repaint
-```
-
-## Classe base
-
-```java
-public abstract class Forma{
-    protected int x;
-    protected int y;
-
-    public abstract void desenhar(Graphics2D g2d);
-
-    public void mover(){}
-}
-```
-
-As classes `Retangulo`, `Circulo` e outras devem herdar de `Forma` e sobrescrever `desenhar()`.
-
-## Exemplo de movimento automático
-
-```java
-public void mover(){
-    x += velocidadeX;
-    if(x<0 || x>760){
-        velocidadeX *= -1;
+classDiagram
+    class Forma {
+        <<abstract>>
+        # int x, y
+        # Color cor
+        + desenhar(Graphics2D g2d)* void
     }
-}
-```
-
-## Utilização do teclado
-
-Flags existentes:
-
-- `space`
-- `up`
-- `down`
-- `left`
-- `right`
-
-Adicionar nova tecla:
-
-```java
-private boolean teclaA=false;
-```
-
-```java
-if(e.getKeyCode()==KeyEvent.VK_A)
-    teclaA=true;
-```
-
-```java
-if(e.getKeyCode()==KeyEvent.VK_A)
-    teclaA=false;
-```
-
-Utilização:
-
-```java
-if(teclaA){
-    // ação
-}
-```
-
-Qualquer constante `KeyEvent.VK_*` pode ser utilizada.
-
-## Utilizando imagens
-
-```java
-BufferedImage imagem =
-ImageIO.read(getClass().getResource("/images/personagem.png"));
-```
-
-```java
-g2d.drawImage(imagem,x,y,largura,altura,null);
-```
-
-## Utilizando sons
-
-```java
-AudioInputStream audio =
-AudioSystem.getAudioInputStream(
-getClass().getResource("/audio/pulo.wav"));
-
-Clip clip=AudioSystem.getClip();
-clip.open(audio);
-clip.start();
-```
-
-## Desafio Final
-
-Utilize este projeto como base para desenvolver um jogo simples, como Pong, Snake, Breakout ou Space Shooter, reaproveitando toda a infraestrutura de janela, renderização, animação e entrada de teclado fornecida pela classe `ScreenSaver`.
+    class Circulo {
+        - int raio, velX, velY
+        + moverAutomatizado(int limiteLargura, int limiteAltura)
+        + desenhar(Graphics2D g2d) void
+    }
+    class Retangulo {
+        - int largura, altura, velocidade
+        + moverControlado(boolean up, boolean down, boolean left, boolean right, int limiteLargura, int limiteAltura)
+        + desenhar(Graphics2D g2d) void
+    }
+    
+    Forma <|-- Circulo
+    Forma <|-- Retangulo

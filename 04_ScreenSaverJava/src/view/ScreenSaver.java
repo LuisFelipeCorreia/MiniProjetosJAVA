@@ -4,6 +4,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import model.Circulo;
+import model.Retangulo;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -57,7 +61,8 @@ public class ScreenSaver extends JFrame {
         *********************************/
         
 
-
+        private Circulo bola;
+        private Retangulo jogador;
 
         
 
@@ -113,7 +118,9 @@ public class ScreenSaver extends JFrame {
             ***********************************/
             
 
-
+            // Posição inicial, tamanho, cor e velocidade
+            this.bola = new Circulo(100, 100, 25, Color.GREEN, 4, 4);
+            this.jogador = new Retangulo(350, 250, 100, 50, Color.BLUE, 5);
 
 
             this.timer = new Timer(DELAY_MS, this);
@@ -139,7 +146,9 @@ public class ScreenSaver extends JFrame {
             ** ↓ Mova suas formas aqui ↓ **
             ******************************/
             
-
+            // Atualiza as posições a cada frame (16ms)
+            this.bola.moverAutomatizado(CANVAS_WIDTH, CANVAS_HEIGHT);
+            this.jogador.moverControlado(up, down, left, right, CANVAS_WIDTH, CANVAS_HEIGHT);
 
 
 
@@ -157,7 +166,8 @@ public class ScreenSaver extends JFrame {
             ** ↓ Desenhe suas formas aqui ↓ **
             *********************************/
 
-
+            this.bola.desenhar(g2d);
+            this.jogador.desenhar(g2d);
 
 
 
