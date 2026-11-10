@@ -29,12 +29,20 @@ public class BankGUI extends JFrame implements ActionListener{
         // 1. Configuração do JFrame (Janela)
         super("Caixa Eletrônico");
         
-
-        // Inicializa a conta bancária
+       // Inicializa a conta bancária
         /*****************************************************
         ** IMPLEMENTAR LÓGICA DE INICIALIZAÇÃO DO NOME AQUI **
         *****************************************************/
-        conta = new ContaBancaria(); 
+        String nomeProprietario = JOptionPane.showInputDialog(null, "Digite o nome do titular da conta:", "Abertura de Conta", JOptionPane.QUESTION_MESSAGE);
+        
+        // Tratamento caso o usuário cancele ou deixe vazio
+        if (nomeProprietario == null || nomeProprietario.trim().isEmpty()) {
+            nomeProprietario = "Cliente Padrão"; 
+        }
+        
+        // Inicializa a conta com um número gerado/fixo e o nome coletado
+        conta = new ContaBancaria(1001, nomeProprietario);
+        
 
 
         // Encerra o programa quando o usuário clica no 'X'.
@@ -93,19 +101,21 @@ public class BankGUI extends JFrame implements ActionListener{
             // Captura o que foi digitado e converte para double
             valorDigitado = Double.parseDouble(txtInput.getText());
         
-            if (e.getSource() == btnSaque) { // Verifica se o evento veio do botão Sacar
+            if (e.getSource() == btnSaque) { 
                 
                 /**************************************************
                 ** IMPLEMENTAR LÓGICA DE SAQUE AQUI              **
                 **************************************************/
-                
+                conta.sacar(valorDigitado);
+                JOptionPane.showMessageDialog(this, "Saque de R$ " + valorDigitado + " realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
-            } else if (e.getSource() == btnDeposito) { // Verifica se o evento veio do botão Depositar
+            } else if (e.getSource() == btnDeposito) { 
                 
                 /**************************************************
                 ** IMPLEMENTAR LÓGICA DE DEPOSITO AQUI           **
                 **************************************************/
-                
+                conta.depositar(valorDigitado);
+                JOptionPane.showMessageDialog(this, "Depósito de R$ " + valorDigitado + " realizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
 
         }catch (Exception ex){
@@ -113,12 +123,12 @@ public class BankGUI extends JFrame implements ActionListener{
             lblSaldo.setText("Valor Inválido!");
         }
         
-        /***************************************************************************
+       /***************************************************************************
         **Preencha os TextField abaixo com os valores de seu objeto ContaBancaria **
         ***************************************************************************/
-        lblConta.setText("Nº da conta: ");
-        lblNome.setText("Nome: ");
-        lblSaldo.setText("Saldo: R$ ");
+        lblConta.setText("Nº da conta: " + conta.getNumero());
+        lblNome.setText("Nome: " + conta.getNome());
+        lblSaldo.setText(String.format("Saldo: R$ %.2f", conta.getSaldo()));
         
         // Limpa o JTextField
         txtInput.setText("");
