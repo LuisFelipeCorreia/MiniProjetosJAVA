@@ -1,3 +1,5 @@
+![senai_logo](./images/logo.png)
+
 # Caixa Eletrônico - Conta Bancária (Mini Projeto 1)
 
 Este é um projeto desenvolvido em Java utilizando a biblioteca Swing para a interface gráfica. O objetivo principal foi aplicar os conceitos de **Programação Orientada a Objetos (POO)**, especificamente o **Encapsulamento**, para proteger o saldo da conta contra operações inválidas.

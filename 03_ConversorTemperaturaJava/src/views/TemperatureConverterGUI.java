@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import models.TemperatureConverter;
+
 import javax.swing.JOptionPane;
 
 // Esta classe será utilizada para construir a GUI
@@ -106,7 +109,35 @@ public class TemperatureConverterGUI extends JFrame implements ActionListener {
                  * =========================================================
                  */
                 
+                double valorCalculado = valorDigitado; // Valor padrão se as escalas forem iguais
+
+                if (escalaOrigem.equals("Celsius") && escalaDestino.equals("Fahrenheit")) {
+                    valorCalculado = TemperatureConverter.celsiusToFahrenheit(valorDigitado);
+                } else if (escalaOrigem.equals("Celsius") && escalaDestino.equals("Kelvin")) {
+                    valorCalculado = TemperatureConverter.celsiusToKelvin(valorDigitado);
+                } else if (escalaOrigem.equals("Fahrenheit") && escalaDestino.equals("Celsius")) {
+                    valorCalculado = TemperatureConverter.fahrenheitToCelsius(valorDigitado);
+                } else if (escalaOrigem.equals("Fahrenheit") && escalaDestino.equals("Kelvin")) {
+                    valorCalculado = TemperatureConverter.fahrenheitToKelvin(valorDigitado);
+                } else if (escalaOrigem.equals("Kelvin") && escalaDestino.equals("Celsius")) {
+                    valorCalculado = TemperatureConverter.kelvinToCelsius(valorDigitado);
+                } else if (escalaOrigem.equals("Kelvin") && escalaDestino.equals("Fahrenheit")) {
+                    valorCalculado = TemperatureConverter.kelvinToFahrenheit(valorDigitado);
+                }
                 
+                // Valida na própria classe caso seja mesma origem e destino (ex: Celsius -> Celsius)
+                else if (escalaOrigem.equals("Celsius")) {
+                    TemperatureConverter.celsiusToFahrenheit(valorDigitado); // Chamado só para validar o limite
+                }
+                else if (escalaOrigem.equals("Fahrenheit")) {
+                    TemperatureConverter.fahrenheitToCelsius(valorDigitado);
+                }
+                else if (escalaOrigem.equals("Kelvin")) {
+                    TemperatureConverter.kelvinToCelsius(valorDigitado);
+                }
+
+                // Formata o resultado para duas casas decimais
+                result = String.format("%.2f %s", valorCalculado, escalaDestino.charAt(0));
 
                 /* 
                  * =========================================================
