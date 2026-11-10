@@ -11,7 +11,7 @@ Este é um projeto desenvolvido em Java utilizando a biblioteca Swing para a int
 Para testar a aplicação no seu computador, siga os passos abaixo:
 
 1. Faça o clone deste repositório na sua máquina local:
-   `git clone https://github.com/LuisFelipeCorreia/MiniProjetosJAVA.git
+   `git clone https://github.com/LuisFelipeCorreia/MiniProjetosJAVA.git`
 2. Abra a pasta do projeto (`01_ContaBancariaJava`) numa IDE de sua preferência (VS Code, Eclipse, IntelliJ, etc.).
 3. Certifique-se de ter o **Extension Pack for Java** instalado (se usar o VS Code).
 4. Localize o ficheiro `App.java` (onde está o método `main`).
