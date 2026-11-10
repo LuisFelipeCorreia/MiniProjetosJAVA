@@ -24,6 +24,49 @@ Este projeto implementa um "Protetor de Tela" animado utilizando a biblioteca Ja
 
 ## 📊 Diagrama de Classes
 
+mermaid
+classDiagram
+    class Forma {
+        <<abstract>>
+        # int x, y
+        # Color cor
+        + desenhar(Graphics2D g2d)* void
+    }
+    class Circulo {
+        - int raio, velX, velY
+        + moverAutomatizado(int limiteLargura, int limiteAltura)
+        + desenhar(Graphics2D g2d) void
+    }
+    class Retangulo {
+        - int largura, altura, velocidade
+        + moverControlado(boolean up, boolean down, boolean left, boolean right, int limiteLargura, int limiteAltura)
+        + desenhar(Graphics2D g2d) void
+    }
+    
+    Forma <|-- Circulo
+    Forma <|-- Retangulo
+
+# Atividade 05 - Desafio Final: Jogo Pong em Java
+
+Evolução da infraestrutura do ScreenSaver para um jogo autoral de **Pong**, aplicando POO, colisões, regras de jogo, pontuação e estado de Game Over.
+
+## 🕹️ Controles e Como Jogar
+- **Seta Para Cima (UP):** Move a raquete para cima.
+- **Seta Para Baixo (DOWN):** Move a raquete para baixo.
+- **Tecla 'R':** Reinicia o jogo após o Game Over.
+- **Objetivo:** Rebater a bola verde com a raquete azul para acumular pontos sem perder as 3 vidas.
+
+## 🛠️ Evoluções em Relação à Atividade 04
+1. **Detecção de Colisão:** Implementada lógica matemática no laço principal que detecta a interseção entre as coordenadas da bola (`Circulo`) e da raquete (`Retangulo`).
+2. **Sistema de Pontuação e Vidas:** Adicionada contagem de pontos ao rebater e desconto de vidas ao deixar a bola passar.
+3. **Gerenciamento de Estado:** Adicionada tela de Game Over e suporte à reinicialização.
+
+## 🧪 Relatório de Testes e Limitações Conhecidas
+- **Testes Realizados:** Movimentação da raquete, rebatedura da bola, contagem de pontos, perda de vidas e acionamento da tecla 'R' para reinício.
+- **Limitação Conhecida:** A velocidade da bola permanece constante em vez de aumentar progressivamente com o tempo.
+- **Melhoria Futura:** Adicionar aceleração progressiva na bola a cada rebatedura e modo para dois jogadores.
+
+## 📊 Diagrama de Classes
 ```mermaid
 classDiagram
     class Forma {
@@ -35,6 +78,7 @@ classDiagram
     class Circulo {
         - int raio, velX, velY
         + moverAutomatizado(int limiteLargura, int limiteAltura)
+        + inverterVelocidadeX()
         + desenhar(Graphics2D g2d) void
     }
     class Retangulo {

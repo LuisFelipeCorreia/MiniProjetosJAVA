@@ -31,4 +31,16 @@ public class Circulo extends Forma {
         g2d.setColor(cor);
         g2d.fillOval(x, y, raio * 2, raio * 2);
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void inverterVelocidadeX() {
+        this.velX = Math.abs(this.velX); // Rebate para a direita
+    }
 }

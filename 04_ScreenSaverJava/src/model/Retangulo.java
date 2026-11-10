@@ -29,4 +29,12 @@ public class Retangulo extends Forma {
         g2d.setColor(cor);
         g2d.fillRect(x, y, largura, altura);
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

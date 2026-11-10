@@ -1,15 +1,11 @@
 package view;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
-import model.Circulo;
-import model.Retangulo;
-
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -29,26 +25,20 @@ public class ScreenSaver extends JFrame {
     private ScreenSaverPanel canvas;
 
     public ScreenSaver() {
-        super("Protetor de Tela - Demonstração de POO");
+        super("Atividade 05 - Desafio Final: Pong Game");
 
         this.canvas = new ScreenSaverPanel();
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setContentPane(canvas);
-
-        // Usamos pack() para que a área útil desenhável seja rigorosamente 800x600,
-        // sem ser reduzida pela borda ou barra de título da janela.
         this.pack();
-
         this.setLocationRelativeTo(null);
     }
 
     public void start() {
         this.setVisible(true);
         this.canvas.startAnimation();
-        
-        // Transfere o foco do teclado para o canvas assim que a janela abre
         this.canvas.requestFocusInWindow();
     }
 
@@ -56,84 +46,53 @@ public class ScreenSaver extends JFrame {
 
         private Timer timer;
 
-        /*********************************
-        ** ↓ Declare suas formas aqui ↓ **
-        *********************************/
-        
-
+        // Entidades do jogo (Herança / Polimorfismo)
         private Circulo bola;
-        private Retangulo jogador;
+        private Retangulo raquete;
 
-        
+        // Controle de Estado do Jogo
+        private int pontuacao = 0;
+        private int vidas = 3;
+        private boolean gameOver = false;
 
-        // Flags para rastrear teclas pressionadas
-        private boolean space = false;
+        // Teclas
         private boolean up = false;
         private boolean down = false;
-        private boolean right = false;
-        private boolean left = false;
 
         public ScreenSaverPanel() {
             this.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
             this.setBackground(Color.BLACK);
-
-            //Habilita o JPanel a receber foco para capturar eventos de teclado
             this.setFocusable(true);
 
-            // Mapeamento de teclas
             this.addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {
-                    // Quando a tecla é pressionada, ativamos a flag
-                    if (e.getKeyCode() == KeyEvent.VK_SPACE)
-                        space = true;
-                    if (e.getKeyCode() == KeyEvent.VK_UP)
-                        up = true;
-                    if (e.getKeyCode() == KeyEvent.VK_DOWN)
-                        down = true;
-                    if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                        right = true;
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT)
-                        left = true;
+                    if (e.getKeyCode() == KeyEvent.VK_UP) up = true;
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) down = true;
+
+                    // Reiniciar jogo se der Game Over
+                    if (gameOver && e.getKeyCode() == KeyEvent.VK_R) {
+                        reiniciarJogo();
+                    }
                 }
 
                 @Override
                 public void keyReleased(KeyEvent e) {
-                    // Quando a tecla é solta, desativamos a flag
-                    if (e.getKeyCode() == KeyEvent.VK_SPACE)
-                        space = false;
-                    if (e.getKeyCode() == KeyEvent.VK_UP)
-                        up = false;
-                    if (e.getKeyCode() == KeyEvent.VK_DOWN)
-                        down = false;
-                    if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-                        right = false;
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT)
-                        left = false;
+                    if (e.getKeyCode() == KeyEvent.VK_UP) up = false;
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) down = false;
                 }
             });
 
-            /***********************************
-            ** ↓ Instancie suas formas aqui ↓ **
-            ***********************************/
-            
-
-            // Posição inicial, tamanho, cor e velocidade
-            this.bola = new Circulo(100, 100, 25, Color.GREEN, 4, 4);
-            this.jogador = new Retangulo(350, 250, 100, 50, Color.BLUE, 5);
-
-
+            this.reiniciarJogo();
             this.timer = new Timer(DELAY_MS, this);
         }
 
-        @Override
-        public Dimension getPreferredSize() {
-            return new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
-        }
-
-        @Override
-        public Dimension getMinimumSize() {
-            return new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT);
+        private void reiniciarJogo() {
+            this.bola = new Circulo(400, 300, 15, Color.GREEN, 5, 5);
+            this.raquete = new Retangulo(30, 250, 15, 100, Color.BLUE, 7);
+            this.pontuacao = 0;
+            this.vidas = 3;
+            this.gameOver = false;
         }
 
         public void startAnimation() {
@@ -142,15 +101,33 @@ public class ScreenSaver extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            /******************************
-            ** ↓ Mova suas formas aqui ↓ **
-            ******************************/
-            
-            // Atualiza as posições a cada frame (16ms)
-            this.bola.moverAutomatizado(CANVAS_WIDTH, CANVAS_HEIGHT);
-            this.jogador.moverControlado(up, down, left, right, CANVAS_WIDTH, CANVAS_HEIGHT);
+            if (!gameOver) {
+                // Movimenta bola
+                bola.moverAutomatizado(CANVAS_WIDTH, CANVAS_HEIGHT);
 
+                // Movimenta raquete do jogador
+                raquete.moverControlado(up, down, false, false, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+                // Lógica de colisão entre bola e raquete
+                if (bola.getX() <= raquete.getX() + 15 && 
+                    bola.getY() + 30 >= raquete.getY() && 
+                    bola.getY() <= raquete.getY() + 100) {
+                    
+                    bola.inverterVelocidadeX(); // Rebate a bola
+                    pontuacao += 10;            // Ganha pontos
+                }
+
+                // Perdeu vida (bola passou da raquete no lado esquerdo)
+                if (bola.getX() <= 0) {
+                    vidas--;
+                    if (vidas <= 0) {
+                        gameOver = true;
+                    } else {
+                        // Reposiciona bola no meio
+                        bola = new Circulo(400, 300, 15, Color.GREEN, 5, 5);
+                    }
+                }
+            }
 
             this.repaint();
         }
@@ -162,15 +139,26 @@ public class ScreenSaver extends JFrame {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            /*********************************
-            ** ↓ Desenhe suas formas aqui ↓ **
-            *********************************/
-
+            // Desenha as formas reutilizando o Polimorfismo
             this.bola.desenhar(g2d);
-            this.jogador.desenhar(g2d);
+            this.raquete.desenhar(g2d);
 
+            // Interface do Usuário (HUD / Feedback Visual)
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 18));
+            g2d.drawString("Pontuação: " + pontuacao, 20, 30);
+            g2d.drawString("Vidas: " + vidas, 680, 30);
 
-
+            // Tela de Game Over
+            if (gameOver) {
+                g2d.setColor(Color.RED);
+                g2d.setFont(new Font("Arial", Font.BOLD, 40));
+                g2d.drawString("GAME OVER", 280, 280);
+                
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2d.drawString("Pressione 'R' para Reiniciar", 275, 330);
+            }
         }
     }
 }
